@@ -80,6 +80,7 @@ public class DynAdapterFeed extends BaseAdapter{
 
 			holder.titleTV = new TextView(context);
 			holder.titleTV.setTextSize(18);
+			holder.titleTV.setSingleLine(true);
 			holder.titleTV.setId(2);
 			RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			lpTitle.addRule(RelativeLayout.RIGHT_OF, holder.author.getId());
@@ -113,6 +114,7 @@ public class DynAdapterFeed extends BaseAdapter{
 			holder.contentTV = new TextView(context);
 			holder.contentTV.setTextSize(12);
 			holder.contentTV.setPadding(0, 0, 0, 5);
+			holder.contentTV.setMaxLines(4);
 			holder.contentTV.setId(5);
 			RelativeLayout.LayoutParams lpContent = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lpContent.addRule(RelativeLayout.BELOW, holder.dateTV.getId());
@@ -130,8 +132,9 @@ public class DynAdapterFeed extends BaseAdapter{
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-
-		holder.titleTV.setText(Html.fromHtml(lay.getFeedPostTitle()));
+		
+		String Title = Html.fromHtml(lay.getFeedPostTitle()).toString();
+		holder.titleTV.setText(limit(Title,25));
 		holder.creatorTV.setText(lay.getAuthor());
 		holder.dateTV.setText(lay.getDate());
 		holder.contentTV.setText(Html.fromHtml(lay.getContent().replace("\\", "")));
@@ -154,5 +157,15 @@ public class DynAdapterFeed extends BaseAdapter{
 		WebView excerpt;
 
 		ImageView author;
+	}
+	
+	public static String limit (String str, int length) {
+		StringBuilder buf = new StringBuilder(str);
+		if (buf.length()>length) {
+			buf.setLength(length);
+			buf.append("...");
+		}
+			
+		return buf.toString();
 	}
 }
