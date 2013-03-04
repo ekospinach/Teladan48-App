@@ -22,6 +22,7 @@ public class TweetFragment extends Fragment{
 	LinearLayout ll;	
 	
 	
+	@SuppressWarnings("unused")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -48,6 +49,7 @@ public class TweetFragment extends Fragment{
 					
 				} else {
 					while (parser.nextToken()!=JsonToken.END_OBJECT) {
+						@SuppressWarnings("unused")
 						String fieldname = parser.getCurrentName();
 						parser.nextToken();
 					}
