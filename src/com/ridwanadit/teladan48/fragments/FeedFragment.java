@@ -40,6 +40,7 @@ public class FeedFragment extends Fragment {
 		lv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
 		new FetchFeed().execute("http://teladan07.org/?wpapi=get_posts&count=20&page=1");
+		
 		return lv;
 
 	}
@@ -64,7 +65,7 @@ public class FeedFragment extends Fragment {
 
 			feed = Fparser.FeedParse(pUrl);
 			for (FeedPosts feedpost : feed.getPosts()) {
-				DynLayoutFeed listItem = new DynLayoutFeed(getActivity());
+				DynLayoutFeed listItem = new DynLayoutFeed();
 				listItem.setFeedPostTitle(feedpost.getTitle());
 				//Log.d("title", listItem.getFeedPostTitle());
 				listItem.setDate(feedpost.getDate());
@@ -83,17 +84,21 @@ public class FeedFragment extends Fragment {
 				Lay.add(listItem);
 			}
 			Adp = new DynAdapterFeed(getActivity(), Lay);
+
 			return Adp;
 
 		}
 
 		@Override
 		protected void onPostExecute(DynAdapterFeed result) {
-
 			prog.dismiss();			
 			lv.setAdapter(Adp);
+			for (DynLayoutFeed dyn : Lay){
+				dyn.loadImage(Adp);
+				Log.d("Gravatar", dyn.getAuthorGravatar());
+			}
+			
 			lv.setOnItemClickListener(new OnItemClickListener() {
-
 				@Override
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
@@ -102,7 +107,7 @@ public class FeedFragment extends Fragment {
 				}
 			});
 
-			//Adp.notifyDataSetChanged();
 		}
 	}
+	
 }
