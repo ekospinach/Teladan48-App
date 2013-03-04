@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.ridwanadit.teladan48.R;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.Html;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
@@ -99,6 +101,15 @@ public class DynAdapterFeed extends BaseAdapter{
 			lpDate.addRule(RelativeLayout.RIGHT_OF, holder.author.getId());
 			rl.addView(holder.dateTV,lpDate);
 
+//			holder.excerpt = new WebView(context);
+//			holder.excerpt.setPadding(0, 0, 0, 5);
+//			holder.excerpt.setBackgroundColor(0x00000000);
+//			holder.excerpt.setId(5);
+//			RelativeLayout.LayoutParams lpExcerpt = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+//			lpExcerpt.addRule(RelativeLayout.BELOW, holder.dateTV.getId());
+//			lpExcerpt.addRule(RelativeLayout.RIGHT_OF, holder.author.getId());
+//			rl.addView(holder.excerpt,lpExcerpt);
+			
 			holder.contentTV = new TextView(context);
 			holder.contentTV.setTextSize(12);
 			holder.contentTV.setPadding(0, 0, 0, 5);
@@ -109,7 +120,7 @@ public class DynAdapterFeed extends BaseAdapter{
 			rl.addView(holder.contentTV,lpContent);
 
 			View v = new View(context);
-			v.setBackgroundColor(android.graphics.Color.WHITE);
+			v.setBackgroundColor(Color.WHITE);
 			v.setId(6);
 			RelativeLayout.LayoutParams lpv = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,2);
 			lpv.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -120,10 +131,12 @@ public class DynAdapterFeed extends BaseAdapter{
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		holder.titleTV.setText(lay.getFeedPostTitle());
+		holder.titleTV.setText(Html.fromHtml(lay.getFeedPostTitle()));
 		holder.creatorTV.setText(lay.getAuthor());
 		holder.dateTV.setText(lay.getDate());
-		holder.contentTV.setText("Filler");
+		holder.contentTV.setText(Html.fromHtml(lay.getContent().replace("\\", "")));
+		//String excerpt = lay.getContent().replace("\\", "");
+		//holder.excerpt.loadData("<html><body>"+excerpt+"</body></html>", "text/html; charset=UTF-8", null);
 		
 		if (lay.getImage()!=null){
 			holder.author.setImageBitmap(lay.getImage());

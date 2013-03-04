@@ -2,7 +2,6 @@ package com.ridwanadit.teladan48.feed;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
