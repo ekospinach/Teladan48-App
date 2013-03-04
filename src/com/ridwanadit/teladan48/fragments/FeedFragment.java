@@ -3,26 +3,37 @@ package com.ridwanadit.teladan48.fragments;
 
 import java.util.ArrayList;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.LinearLayout.LayoutParams;
-import android.widget.Toast;
-
+import android.widget.TextView;
 import com.ridwanadit.teladan48.feed.DynAdapterFeed;
 import com.ridwanadit.teladan48.feed.DynLayoutFeed;
 import com.ridwanadit.teladan48.feedparser.Feed;
 import com.ridwanadit.teladan48.feedparser.FeedAuthor;
 import com.ridwanadit.teladan48.feedparser.FeedPosts;
 import com.ridwanadit.teladan48.feedparser.JSONFeedParser;
+import com.ridwanadit.teladan48.feedparser.PopUp;
 
 public class FeedFragment extends Fragment {
 
@@ -31,6 +42,7 @@ public class FeedFragment extends Fragment {
 	ListView lv;
 	DynAdapterFeed Adp = null;
 	ArrayList<DynLayoutFeed> Lay = new ArrayList<DynLayoutFeed>();
+	PopUp pop = new PopUp();
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -103,11 +115,12 @@ public class FeedFragment extends Fragment {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int arg2, long arg3) {
 					// TODO Auto-generated method stub
-					Toast.makeText(getActivity(), Adp.getItem(arg2).getLink(), Toast.LENGTH_SHORT).show();
+					pop.ShowPop(getActivity(), lv, Adp,arg2);
 				}
 			});
 
 		}
 	}
+	
 	
 }
