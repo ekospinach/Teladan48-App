@@ -16,7 +16,7 @@
 
 package com.ridwanadit.teladan48;
 
-import com.ridwanadit.teladan48.fragments.TweetFragment;
+import com.ridwanadit.teladan48.fragments.RagialFragment;
 import com.ridwanadit.teladan48.fragments.FeedFragment;
 import com.ridwanadit.teladan48.lib.CompatTab;
 import com.ridwanadit.teladan48.lib.CompatTabListener;
@@ -40,7 +40,6 @@ public class MainActivity extends TabCompatActivity {
         setContentView(R.layout.main);
 
         TabHelper tabHelper = getTabHelper();
-
         CompatTab photosTab = tabHelper.newTab("news")
                 .setText(R.string.tab_news)
                 .setIcon(R.drawable.ic_tab_photos)
@@ -56,7 +55,7 @@ public class MainActivity extends TabCompatActivity {
         CompatTab newTab = tabHelper.newTab("new")
                 		.setText(R.string.tab_tweets)
                 		.setIcon(R.drawable.ic_tab_photos)
-                		.setTabListener(new InstantiatingTabListener(this, TweetFragment.class));
+                		.setTabListener(new InstantiatingTabListener(this, RagialFragment.class));
         tabHelper.addTab(newTab);
     }
 

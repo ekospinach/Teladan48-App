@@ -1,95 +1,54 @@
 package com.ridwanadit.teladan48.fragments;
 
-import android.app.AlertDialog;
+
+import java.util.ArrayList;
+
 import android.app.ProgressDialog;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
-import com.ridwanadit.teladan48.xml.Channel;
-import com.ridwanadit.teladan48.xml.Item;
-import com.ridwanadit.teladan48.xml.Items;
-import com.ridwanadit.teladan48.xml.ParseHandler;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-
-import javax.xml.datatype.Duration;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import com.ridwanadit.teladan48.adapter.DynAdapterFeed;
-import com.ridwanadit.teladan48.adapter.DynLayoutFeed;
+import com.ridwanadit.teladan48.feed.DynAdapterFeed;
+import com.ridwanadit.teladan48.feed.DynLayoutFeed;
+import com.ridwanadit.teladan48.feedparser.Feed;
+import com.ridwanadit.teladan48.feedparser.FeedAuthor;
+import com.ridwanadit.teladan48.feedparser.FeedPosts;
+import com.ridwanadit.teladan48.feedparser.JSONFeedParser;
 
 public class FeedFragment extends Fragment {
 
-	ParseHandler ph = new ParseHandler();
-	Channel channel = new Channel();
-	Item item = new Item();
-	Items items = new Items();
 	String[] parts; 
+	JSONFeedParser Fparser= new JSONFeedParser();
+	ListView lv;
+	DynAdapterFeed Adp = null;
+	ArrayList<DynLayoutFeed> Lay = new ArrayList<DynLayoutFeed>();
 
-	Bitmap bmp;
-
-	ArrayList<String> title = new ArrayList<String>();
-	ArrayList<String> creator = new ArrayList<String>();
-	ArrayList<String> content = new ArrayList<String>();
-	ArrayList<String> date = new ArrayList<String>();
-	ArrayList<String> imgurl = new ArrayList<String>();
-	ArrayList<String> link = new ArrayList<String>();
-
-	ScrollView scrl;
-	LinearLayout ll;
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		ll = new LinearLayout (getActivity());
-		ll.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-		ll.setOrientation(LinearLayout.VERTICAL);
+		lv = new ListView(getActivity());
+		lv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
 
-		scrl = new ScrollView (getActivity());
-		scrl.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.MATCH_PARENT));
-		scrl.setFillViewport(true);
-
-		new FetchFeed().execute("http://teladan07.org/feed");
-		ll.addView(scrl);
-		return ll;
+		new FetchFeed().execute("http://teladan07.org/?wpapi=get_posts&count=20&page=1");
+		return lv;
 
 	}
 
-	public ScrollView loadItems (String title, String creator, String date, String content, String url) {
-		return scrl;
-	}
-
-	private class FetchFeed extends AsyncTask<String, Void, ScrollView>{
+	private class FetchFeed extends AsyncTask<String, Void, DynAdapterFeed>{
 		ProgressDialog prog;
-		DynLayoutFeed listItem = new DynLayoutFeed(getActivity());
-		DynAdapterFeed li = new DynAdapterFeed(getActivity());
-
 
 		@Override
 		protected void onPreExecute() {
-			// TODO Auto-generated method stub
-
 			prog = new ProgressDialog(getActivity());
 			prog.setTitle("Fetching");
 			prog.setMessage("Please Wait...");       
@@ -97,86 +56,53 @@ public class FeedFragment extends Fragment {
 		}
 
 		@Override
-		protected ScrollView doInBackground(String... url) {
+		protected DynAdapterFeed doInBackground(String... url) {
 			// TODO Auto-generated method stub
+			Feed feed;
 			String pUrl = url[0];
-			Log.d("a", "masuk");
-			//Validate.isTrue(url.length()>1,"need to specify URL");
-			Document doc;
-			String temp;
+			Log.d("URL", pUrl);
 
-			try {
-				InputStream in = new java.net.URL(pUrl).openStream();
-				items = ph.parse(in);
-				for (int i=0; i<items.size(); i++) {
-					//Log.d("Item "+i, items.get(i).getTitle().toString());
-					title.add(items.get(i).getTitle().toString());
-					creator.add(items.get(i).getCreator().toString());
-					if (items.get(i).getDescription().toString().contains(">")){
-						parts=items.get(i).getDescription().toString().split(">");
-						content.add(parts[1]);
-						temp = parts[0]+">";
-						doc = Jsoup.parse(temp);
-						Elements media = doc.select("[src]");
-						imgurl.add(media.attr("abs:src").toString());
-					}
-					else {
-						imgurl.add("no image");
-						content.add(items.get(i).getDescription().toString());
-					}
-					//Log.d("Image", imgurl.get(i));
-					date.add(items.get(i).getPubDate().toString());
-					link.add(items.get(i).getLink().toString());
+			feed = Fparser.FeedParse(pUrl);
+			for (FeedPosts feedpost : feed.getPosts()) {
+				DynLayoutFeed listItem = new DynLayoutFeed(getActivity());
+				listItem.setFeedPostTitle(feedpost.getTitle());
+				//Log.d("title", listItem.getFeedPostTitle());
+				listItem.setDate(feedpost.getDate());
+				//Log.d("Date", listItem.getDate());
+				listItem.setContent(feedpost.getExcerpt());
+				//Log.d("excerpt", listItem.getContent());
+				listItem.setLink(feedpost.getUrl());
+				//Log.d("URL", listItem.getLink());
+				listItem.setFeedPostID(feedpost.getId());
+				//Log.d("ID", listItem.getFeedPostID().toString());
+				for (FeedAuthor feedauthor : feedpost.getAuthor()) {
+					listItem.setAuthor(feedauthor.getName());
+					listItem.setAuthorURL(feedauthor.getURL());
+					listItem.setAuthorGravatar(feedauthor.getGravatar());
 				}
-
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Lay.add(listItem);
 			}
-			//Log.d("a", ""+strlist.size());
-			for (int i = 0; i<items.size(); i++){
-				if (imgurl.get(i).toString().equals("no image")){
-					listItem.setInfo(getActivity(), i,
-							title.get(i).toString(),
-							creator.get(i).toString(), 
-							date.get(i).toString(),
-							content.get(i).toString(),null,
-							link.get(i).toString());					
-				}
-				else {
-					try {
-						InputStream in = new java.net.URL(imgurl.get(i).toString()).openStream();
-						bmp = BitmapFactory.decodeStream(in);
-						listItem.setInfo(getActivity(), i,
-								title.get(i).toString(),
-								creator.get(i).toString(), 
-								date.get(i).toString(),
-								content.get(i).toString(),bmp,
-								link.get(i).toString());
-					} catch (MalformedURLException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				}
-				Log.d("Link", listItem.getId()+"");
-
-			}
-
-			return scrl;
+			Adp = new DynAdapterFeed(getActivity(), Lay);
+			return Adp;
 
 		}
 
 		@Override
-		protected void onPostExecute(ScrollView result) {
-			// TODO Auto-generated method stu
+		protected void onPostExecute(DynAdapterFeed result) {
 
-			prog.dismiss();
-			scrl.addView(listItem);
-			super.onPostExecute(result);
+			prog.dismiss();			
+			lv.setAdapter(Adp);
+			lv.setOnItemClickListener(new OnItemClickListener() {
+
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+						int arg2, long arg3) {
+					// TODO Auto-generated method stub
+					Toast.makeText(getActivity(), Adp.getItem(arg2).getLink(), Toast.LENGTH_SHORT).show();
+				}
+			});
+
+			//Adp.notifyDataSetChanged();
 		}
 	}
 }
