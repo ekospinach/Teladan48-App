@@ -1,6 +1,12 @@
 package com.ridwanadit.teladan48.feed;
 
-import android.content.Context;
+import java.io.IOException;
+import java.io.InputStream;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
+import android.util.Log;
 
 public class DynLayoutFeed {
 
@@ -14,7 +20,10 @@ public class DynLayoutFeed {
 	private String feedAuthorURL;
 	private String feedAuthorGravatar;
 	
-	public DynLayoutFeed(Context context) {
+	private Bitmap authorImage;
+	private DynAdapterFeed adp;
+	
+	public DynLayoutFeed() {
 	}
 	
 	public void setFeedPostTitle(String feedPostTitle) {
@@ -81,4 +90,50 @@ public class DynLayoutFeed {
 		this.feedAuthorGravatar = feedAuthorGravatar;
 	}
 	
+	public void setAdapter (DynAdapterFeed adp) {
+		this.adp = adp;
+	}
+	
+	public DynAdapterFeed getAdapter() {
+		return adp;
+	}
+	
+	public Bitmap getImage() {
+		return authorImage;
+	}
+	
+	public void loadImage(DynAdapterFeed adp) {
+		this.adp = adp;
+		Log.d("Masuk", feedAuthorGravatar);
+		if (feedAuthorGravatar != null && !feedAuthorGravatar.equals("")) {
+			new imageLoadTask().execute(feedAuthorGravatar);
+		}
+	}
+	
+	private class imageLoadTask extends AsyncTask<String, Void, Bitmap> {
+
+		@Override
+		protected Bitmap doInBackground(String... params) {
+				try {
+					Log.d("Image", "Begin processing image");
+					InputStream in = new java.net.URL(params[0]).openStream();
+					Bitmap bmp = BitmapFactory.decodeStream(in);
+					return bmp;
+				} catch (IOException e) {
+					return null;
+				}
+		}
+
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			if (result!=null) {
+				authorImage = result;
+				if (adp!=null) {
+					adp.notifyDataSetChanged();
+				}
+			} else {
+			}
+		}
+		
+	}
 }

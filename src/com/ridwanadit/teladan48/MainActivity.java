@@ -66,7 +66,8 @@ public class MainActivity extends TabCompatActivity {
     public static class InstantiatingTabListener implements CompatTabListener {
 
         private final TabCompatActivity mActivity;
-        private final Class mClass;
+        @SuppressWarnings("rawtypes")
+		private final Class mClass;
 
         /**
          * Constructor used each time a new tab is created.
