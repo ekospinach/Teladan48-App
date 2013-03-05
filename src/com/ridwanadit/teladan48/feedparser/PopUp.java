@@ -3,6 +3,8 @@ package com.ridwanadit.teladan48.feedparser;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.Typeface;
+import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.webkit.WebView;
@@ -35,8 +37,8 @@ public class PopUp {
 		TextView close = new TextView(context);
 		close.setTextSize(10);
 		close.setText("Close");
-		close.setId(4);
-		close.setPadding(0, 5, 5, 0);
+		close.setId(7);
+		close.setPadding(0, 3, 3, 0);
 		close.setGravity(Gravity.RIGHT);
 		close.setOnClickListener(new View.OnClickListener() {
 			
@@ -54,7 +56,7 @@ public class PopUp {
 		authorImage.setAdjustViewBounds(true);
 		authorImage.setMaxHeight(80);
 		authorImage.setMaxWidth(80);
-		authorImage.setPadding(10,10,10,10);
+		authorImage.setPadding(5,5,5,0);
 		authorImage.setId(1);
 		authorImage.setImageBitmap(Adp.getItem(pos).getImage());
 		RelativeLayout.LayoutParams lpiv = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
@@ -71,17 +73,37 @@ public class PopUp {
 		lpauthor.addRule(RelativeLayout.BELOW, close.getId());
 		relLay.addView(authorName, lpauthor);
 		
+		TextView feedTime = new TextView(context);
+		feedTime.setTextSize(12);
+		feedTime.setId(3);		
+		feedTime.setText(Adp.getItem(pos).getDate());
+		RelativeLayout.LayoutParams lptime = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+		lptime.addRule(RelativeLayout.RIGHT_OF, authorImage.getId());
+		lptime.addRule(RelativeLayout.BELOW, authorName.getId());
+		relLay.addView(feedTime, lptime);		
+
+		TextView feedTitle = new TextView(context);
+		feedTitle.setTextSize(14);
+		feedTitle.setTypeface(null,Typeface.BOLD);
+		feedTitle.setText(Html.fromHtml(Adp.getItem(pos).getFeedPostTitle()));
+		feedTitle.setId(4);
+		feedTitle.setPadding(10, 5 , 0, 5);
+		RelativeLayout.LayoutParams lpt = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+		lpt.addRule(RelativeLayout.BELOW, authorImage.getId());
+		relLay.addView(feedTitle, lpt);
+		
 		View v = new View(context);
 		v.setBackgroundColor(Color.WHITE);
-		v.setId(6);
+		v.setId(5);
 		RelativeLayout.LayoutParams lpv = new RelativeLayout.LayoutParams(LayoutParams.MATCH_PARENT,2);
 		lpv.addRule(RelativeLayout.BELOW, authorImage.getId());
+		lpv.addRule(RelativeLayout.BELOW, feedTitle.getId());
 		relLay.addView(v,lpv);
 		
 		WebView wv = new WebView(context);
 		wv.loadData(data, "text/html; charset=UTF-8", null);
 		wv.setBackgroundColor(Color.BLACK);
-		wv.setId(3);
+		wv.setId(6);
 		wv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 		wv.setWebViewClient(new WebViewClient(){
 			@Override

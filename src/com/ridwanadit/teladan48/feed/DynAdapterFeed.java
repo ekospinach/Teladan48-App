@@ -63,7 +63,6 @@ public class DynAdapterFeed extends BaseAdapter{
 		ViewHolder holder;
 		RelativeLayout rl = new RelativeLayout(context);
 		DynLayoutFeed lay =  list.get(position);
-		//Log.d("Tag", list.get(position).getAuthorGravatar().toString());
 		holder = new ViewHolder();
 		
 		if(convertView==null){
@@ -71,7 +70,7 @@ public class DynAdapterFeed extends BaseAdapter{
 			holder.author.setAdjustViewBounds(true);
 			holder.author.setMaxHeight(80);
 			holder.author.setMaxWidth(80);
-			holder.author.setPadding(10,10,10,10);
+			holder.author.setPadding(10,10,10, 0);
 			holder.author.setId(1);
 			RelativeLayout.LayoutParams lpiv = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
 			lpiv.addRule(RelativeLayout.ALIGN_LEFT);
@@ -79,7 +78,7 @@ public class DynAdapterFeed extends BaseAdapter{
 			rl.addView(holder.author,lpiv);
 
 			holder.titleTV = new TextView(context);
-			holder.titleTV.setTextSize(18);
+			holder.titleTV.setTextSize(16);
 			holder.titleTV.setSingleLine(true);
 			holder.titleTV.setId(2);
 			RelativeLayout.LayoutParams lpTitle = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
@@ -101,15 +100,6 @@ public class DynAdapterFeed extends BaseAdapter{
 			lpDate.addRule(RelativeLayout.BELOW, holder.creatorTV.getId());
 			lpDate.addRule(RelativeLayout.RIGHT_OF, holder.author.getId());
 			rl.addView(holder.dateTV,lpDate);
-
-//			holder.excerpt = new WebView(context);
-//			holder.excerpt.setPadding(0, 0, 0, 5);
-//			holder.excerpt.setBackgroundColor(0x00000000);
-//			holder.excerpt.setId(5);
-//			RelativeLayout.LayoutParams lpExcerpt = new RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
-//			lpExcerpt.addRule(RelativeLayout.BELOW, holder.dateTV.getId());
-//			lpExcerpt.addRule(RelativeLayout.RIGHT_OF, holder.author.getId());
-//			rl.addView(holder.excerpt,lpExcerpt);
 			
 			holder.contentTV = new TextView(context);
 			holder.contentTV.setTextSize(12);
@@ -138,9 +128,7 @@ public class DynAdapterFeed extends BaseAdapter{
 		holder.creatorTV.setText(lay.getAuthor());
 		holder.dateTV.setText(lay.getDate());
 		holder.contentTV.setText(Html.fromHtml(lay.getContent().replace("\\", "")));
-		//String excerpt = lay.getContent().replace("\\", "");
-		//holder.excerpt.loadData("<html><body>"+excerpt+"</body></html>", "text/html; charset=UTF-8", null);
-		
+	
 		if (lay.getImage()!=null){
 			holder.author.setImageBitmap(lay.getImage());
 		} else {
